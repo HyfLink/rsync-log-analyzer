@@ -81,7 +81,15 @@ pub struct RsyncLogLine {
     //  ^~~~~~~~~~~~~~~~~~~                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //  time                                    path
     pub time: DateTime,
+    pub kind: RsyncLogKind,
     pub path: Rc<[u8]>,
+}
+
+/// Specifies whether the path is directory or file.
+#[derive(Clone, Copy, Debug)]
+pub enum RsyncLogKind {
+    Directory,
+    Filepath,
 }
 
 impl RsyncLogLine {
@@ -112,10 +120,17 @@ impl RsyncLogLine {
             Err(_) => return None,
         };
 
-        matches!(kind, FILEPATH_SPEC | DIRECTORY_SPEC).then(|| Self {
+        let kind = match kind {
+            DIRECTORY_SPEC => RsyncLogKind::Directory,
+            FILEPATH_SPEC => RsyncLogKind::Filepath,
+            _ => return None,
+        };
+
+        Some(Self {
             time,
             // SAFETY: transmute `&[u8]` to `&OsStr`.
             path: Rc::from(path),
+            kind,
         })
     }
 
