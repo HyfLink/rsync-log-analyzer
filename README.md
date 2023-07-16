@@ -6,4 +6,4 @@
 
 - [format.md](doc/format.md) 描述输入文件的格式
 
-- [algorithm.md](doc/algorithm.md) 描述采用算法 (TODO)。
+- [algorithm.md](doc/algorithm.md) 描述采用算法。

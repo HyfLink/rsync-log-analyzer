@@ -7,11 +7,11 @@
 ```bnf
 file    = { line '\n' }
         ;
-line    = data time '[' number ']' string
-        | data time '[' number ']' 'cd+++++++++' directory
-        | data time '[' number ']' '>f+++++++++' filepath
+line    = date time '[' number ']' string
+        | date time '[' number ']' 'cd+++++++++' directory
+        | date time '[' number ']' '>f+++++++++' filepath
         ;
-data    = number '/' number '/' number
+date    = number '/' number '/' number
         ;
 time    = number ':' number ':' number
         ;
@@ -33,7 +33,7 @@ time    = number ':' number ':' number
 
   - `line` : single line of the file, without `'\n'`.
 
-  - `data` : for example `'2023/07/04'`.
+  - `date` : for example `'2023/07/04'`.
 
   - `time` : for example `'03:44:47'`.
 
@@ -44,7 +44,7 @@ time    = number ':' number ':' number
 ```text
 '2023/07/04 03:50:55 [14417] >f+++++++++ projects/临时/xvd0605/20191/tps/boost_1_64_0/boost/signals2/detail/auto_buffer.hpp'
  ^~~~~~~~~~ ^~~~~~~~  ^~~~~              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- data       time      number             filepath
+ date       time      number             filepath
 ```
 
 2. 该行日志描述一个文件夹，特征是字符串`"cd+++++++++"`。
@@ -52,13 +52,13 @@ time    = number ':' number ':' number
 ```text
 '2023/07/04 03:50:55 [14417] cd+++++++++ projects/临时/xvd0605/20191/tps/boost_1_64_0/boost/serialization/'
  ^~~~~~~~~~ ^~~~~~~~  ^~~~~              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- data       time      number             directory
+ date       time      number             directory
 ```
 
 2. 程序不需要该类日志信息。
 
 ```text
-'2023/07/04 03:40:27 [14417] total: matches=0  hash_hits=0  false_alarms=0 data=212534101301'
+'2023/07/04 03:40:27 [14417] total: matches=0  hash_hits=0  false_alarms=0 date=212534101301'
  ^~~~~~~~~~ ^~~~~~~~  ^~~~~  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- data       time      number string
+ date       time      number string
 ```
