@@ -88,8 +88,16 @@ pub struct RsyncLogLine {
 /// Specifies whether the path is directory or file.
 #[derive(Clone, Copy, Debug)]
 pub enum RsyncLogKind {
-    Directory,
-    Filepath,
+    // "cd+++++++++"
+    CD,
+    // ">f+++++++++"
+    FP,
+    // "cL+++++++++"
+    CL,
+    // "cS+++++++++"
+    CS,
+    // "cD+++++++++"
+    DD,
 }
 
 impl RsyncLogLine {
@@ -102,13 +110,16 @@ impl RsyncLogLine {
         //  time                |     |kind        | path
         //                      ptr1  ptr2         ptr3
         const DATETIME_FORMAT: &str = "%Y/%m/%d %H:%M:%S";
-        const DIRECTORY_SPEC: &[u8] = b" cd+++++++++";
-        const FILEPATH_SPEC: &[u8] = b" >f+++++++++";
+        const CD_SPEC: &[u8] = b" cd+++++++++";
+        const FP_SPEC: &[u8] = b" >f+++++++++";
+        const CL_SPEC: &[u8] = b" cL+++++++++";
+        const CS_SPEC: &[u8] = b" cS+++++++++";
+        const DD_SPEC: &[u8] = b" cDD+++++++++";
 
         // splits the `line` into parts (time, kind, path).
         let (time, ptr1) = line.split_at(line.iter().position(|x| b'[' == *x)?);
         let (_num, ptr2) = ptr1.split_at(ptr1.iter().position(|x| b']' == *x)? + 1);
-        let (kind, ptr3) = ptr2.split_at(FILEPATH_SPEC.len());
+        let (kind, ptr3) = ptr2.split_at(FP_SPEC.len());
         let path = ptr3.get(1..ptr3.len() - 1)?;
 
         // parses `time`.
@@ -121,8 +132,11 @@ impl RsyncLogLine {
         };
 
         let kind = match kind {
-            DIRECTORY_SPEC => RsyncLogKind::Directory,
-            FILEPATH_SPEC => RsyncLogKind::Filepath,
+            CD_SPEC => RsyncLogKind::CD,
+            FP_SPEC => RsyncLogKind::FP,
+            CL_SPEC => RsyncLogKind::CL,
+            CS_SPEC => RsyncLogKind::CS,
+            DD_SPEC => RsyncLogKind::DD,
             _ => return None,
         };
 
